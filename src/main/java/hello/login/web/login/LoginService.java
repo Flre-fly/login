@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 @Service//스프링빈으로 등록
 @RequiredArgsConstructor
 public class LoginService {
-    private final LoginRepository loginRepository;
+    private final MemberRepository memberRepository;
     public boolean login(LoginForm form){
-        return loginRepository.isMember(form.getLoginId(), form.getLoginPw());
+        return memberRepository.isMember(form.getLoginId(), form.getPassword());
 
     }
 }

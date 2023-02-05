@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class LoginRepository {
+public class MemberRepository {
     private Map<Long, Member> store = new HashMap<>();
     Long id = 0l;
     public Member save(Member member){
