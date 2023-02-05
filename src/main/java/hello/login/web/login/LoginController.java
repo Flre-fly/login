@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Slf4j
@@ -30,11 +32,16 @@ public class LoginController {
     }
 
     @PostMapping
-    public String login(@Valid @ModelAttribute LoginForm loginForm, BindingResult bindingResult){
+    public String login(@Valid @ModelAttribute LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response){
         if(bindingResult.hasErrors()){
             return "login/loginForm";
         }
-        if(loginService.login(loginForm)) return "redirect:/";
+        if(loginService.login(loginForm)) {
+            //로그인이 성공했을 경우 쿠키를 담아 보낸다
+            Cookie idCookie = new Cookie("memberId", String.valueOf(loginForm.getLoginId()));
+            response.addCookie(idCookie);
+            return "redirect:/";
+        }
         //만약 로그인에 실패했을경우엔 bindingResult에 error넣어줘야함
         else{
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
