@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginService {
     private final MemberRepository memberRepository;
-    public boolean login(LoginForm form){
+    public Member login(LoginForm form){
         return memberRepository.isMember(form.getLoginId(), form.getPassword());
 
     }

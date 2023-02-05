@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;
-
+    
     //로그인화면으로 들어갔을때(get요청시) 로그인화면을 보여주는 controller도 있어야함
     @GetMapping
     public String login(@ModelAttribute("loginForm") LoginForm form){
@@ -36,9 +36,10 @@ public class LoginController {
         if(bindingResult.hasErrors()){
             return "login/loginForm";
         }
-        if(loginService.login(loginForm)) {
+        Member member = loginService.login(loginForm);
+        if(member!=null) {
             //로그인이 성공했을 경우 쿠키를 담아 보낸다
-            Cookie idCookie = new Cookie("memberId", String.valueOf(loginForm.getLoginId()));
+            Cookie idCookie = new Cookie("memberId", String.valueOf(member.getId()));
             response.addCookie(idCookie);
             return "redirect:/";
         }

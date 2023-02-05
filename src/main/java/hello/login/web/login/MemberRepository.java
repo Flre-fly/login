@@ -17,10 +17,10 @@ public class MemberRepository {
     public Member getById(Long id){
         return store.get(id);
     }
-    public boolean isMember(String loginId, String loginPw){
+    public Member isMember(String loginId, String loginPw){
         for (Member member:store.values()) {
-            if(member.getLoginId().equals(loginId) && member.getLoginPw().equals(loginPw)) return true;
+            if(member.getLoginId().equals(loginId) && member.getLoginPw().equals(loginPw)) return member;
         }
-        return false;
+        return null;
     }
 }
