@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +16,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;
-    
+
     //로그인화면으로 들어갔을때(get요청시) 로그인화면을 보여주는 controller도 있어야함
     @GetMapping
     public String login(@ModelAttribute("loginForm") LoginForm form){
@@ -30,6 +27,17 @@ public class LoginController {
         log.info(form.getPassword());
         return "login/loginForm";
     }
+
+    //prefetch로 로그아웃될수있기대문에 post요청으로 로그아웃을 진행
+    @PostMapping("/logout")
+    public String logout(HttpServletResponse response){
+        Cookie cookie = new Cookie("memberId", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "redirect:/";
+    }
+
 
     @PostMapping
     public String login(@Valid @ModelAttribute LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response){
