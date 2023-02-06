@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Controller
-@RequestMapping("/home")
 @RequiredArgsConstructor
 public class HomeController {
     private final MemberRepository memberRepository;
@@ -30,6 +29,6 @@ public class HomeController {
             return "home";
         }
         model.addAttribute("member", member);
-        return "/loginHome";
+        return "loginHome";
     }
 }

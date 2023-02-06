@@ -6,22 +6,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Slf4j
 @Controller
-@RequestMapping("/login")
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;
     private final SessionManager sessionManager;
 
     //로그인화면으로 들어갔을때(get요청시) 로그인화면을 보여주는 controller도 있어야함
-    @GetMapping
-    public String login(@ModelAttribute("loginForm") LoginForm form){
+    @GetMapping("/login")
+    public String loginForm(@ModelAttribute("loginForm") LoginForm form){
         //login.loginForm페이지에서는 form에대한 참조를하고있음
         //그래서 일단 빈객체라도 넘겨주어야함. 그래서 사용은 안하지만 parameter로 받고있음
 
@@ -32,14 +30,14 @@ public class LoginController {
 
     //prefetch로 로그아웃될수있기대문에 post요청으로 로그아웃을 진행
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response){
+    public String logout(HttpServletRequest request){
         sessionManager.expire(request);
 
         return "redirect:/";
     }
 
 
-    @PostMapping
+    @PostMapping("/login")
     public String login(@Valid @ModelAttribute LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response){
         if(bindingResult.hasErrors()){
             return "login/loginForm";
