@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;
+    private final SessionManager sessionManager;
 
     //로그인화면으로 들어갔을때(get요청시) 로그인화면을 보여주는 controller도 있어야함
     @GetMapping
@@ -30,10 +32,8 @@ public class LoginController {
 
     //prefetch로 로그아웃될수있기대문에 post요청으로 로그아웃을 진행
     @PostMapping("/logout")
-    public String logout(HttpServletResponse response){
-        Cookie cookie = new Cookie("memberId", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+    public String logout(HttpServletRequest request, HttpServletResponse response){
+        sessionManager.expire(request);
 
         return "redirect:/";
     }
@@ -46,9 +46,8 @@ public class LoginController {
         }
         Member member = loginService.login(loginForm);
         if(member!=null) {
-            //로그인이 성공했을 경우 쿠키를 담아 보낸다
-            Cookie idCookie = new Cookie("memberId", String.valueOf(member.getId()));
-            response.addCookie(idCookie);
+            //응답에 쿠키를 저장해준다
+            sessionManager.createSession(response, member.getId());
             return "redirect:/";
         }
         //만약 로그인에 실패했을경우엔 bindingResult에 error넣어줘야함
