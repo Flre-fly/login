@@ -14,15 +14,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SessionManager {
     private static final String SESSION_NAME = "sessionId";
     //id로 저장해버리면 meember의 id인지 item의 id인지를 몰라서 안될듯..
-    private static Map<String, String> session = new ConcurrentHashMap<>();
+    private static Map<String, Object> session = new ConcurrentHashMap<>();
 
-    public void createSession(HttpServletResponse response, Long id){
+    public void createSession(HttpServletResponse response, Member member){
         String key = UUID.randomUUID().toString();
-        session.put(key, id.toString());
+        session.put(key, member);
         Cookie cookie = new Cookie(SESSION_NAME,key);
         response.addCookie(cookie);
     }
-    public String getSession(HttpServletRequest request){
+    public Object getSession(HttpServletRequest request){
         Cookie cookie = getCookie(request);
         if(cookie!=null) return session.get(cookie.getValue());
         return null;

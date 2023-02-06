@@ -47,7 +47,7 @@ public class LoginController {
         Member member = loginService.login(loginForm);
         if(member!=null) {
             //응답에 쿠키를 저장해준다
-            sessionManager.createSession(response, member.getId());
+            sessionManager.createSession(response, member);
             return "redirect:/";
         }
         //만약 로그인에 실패했을경우엔 bindingResult에 error넣어줘야함
