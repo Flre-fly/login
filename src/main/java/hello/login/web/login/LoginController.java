@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Slf4j
@@ -15,7 +16,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;
-    private final SessionManager sessionManager;
 
     //로그인화면으로 들어갔을때(get요청시) 로그인화면을 보여주는 controller도 있어야함
     @GetMapping("/login")
@@ -31,21 +31,26 @@ public class LoginController {
     //prefetch로 로그아웃될수있기대문에 post요청으로 로그아웃을 진행
     @PostMapping("/logout")
     public String logout(HttpServletRequest request){
-        sessionManager.expire(request);
+        HttpSession session = request.getSession();
+        //세션삭제
+        if(session!=null){
+            session.invalidate();
+        }
 
         return "redirect:/";
     }
 
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response){
+    public String login(@Valid @ModelAttribute LoginForm loginForm, BindingResult bindingResult, HttpServletRequest request){
         if(bindingResult.hasErrors()){
             return "login/loginForm";
         }
         Member member = loginService.login(loginForm);
         if(member!=null) {
             //응답에 쿠키를 저장해준다
-            sessionManager.createSession(response, member);
+            HttpSession session= request.getSession();
+            session.setAttribute(SessionConst.LOGIN_MEMBER, member);
             return "redirect:/";
         }
         //만약 로그인에 실패했을경우엔 bindingResult에 error넣어줘야함
