@@ -24,7 +24,7 @@ public class SessionManager {
     }
     public String getSession(HttpServletRequest request){
         Cookie cookie = getCookie(request);
-        if(cookie!=null) return cookie.getValue();
+        if(cookie!=null) return session.get(cookie.getValue());
         return null;
     }
     public void expire(HttpServletRequest request){
@@ -34,7 +34,8 @@ public class SessionManager {
             session.remove(cookie.getValue());
         }
     }
-    public Cookie getCookie(HttpServletRequest request){
+    //클래스 내부에서만쓰는 메서드니까 private선언
+    private Cookie getCookie(HttpServletRequest request){
         return Arrays.stream(request.getCookies()).filter(c -> c.getName().equals(SESSION_NAME)).findAny().orElse(null);
     }
 }
