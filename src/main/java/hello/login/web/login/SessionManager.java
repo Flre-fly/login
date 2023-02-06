@@ -36,6 +36,10 @@ public class SessionManager {
     }
     //클래스 내부에서만쓰는 메서드니까 private선언
     private Cookie getCookie(HttpServletRequest request){
-        return Arrays.stream(request.getCookies()).filter(c -> c.getName().equals(SESSION_NAME)).findAny().orElse(null);
+        return Arrays
+                .stream(request.getCookies())
+                .filter(c -> c.getName().equals(SESSION_NAME))
+                .findAny()
+                .orElse(null);
     }
 }
